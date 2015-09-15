@@ -1,9 +1,17 @@
-package com.zanvork.wowspring.controller;
+package com.zanvork.wowspring.utils;
 
+import com.zanvork.wowspring.model.DAO.RealmHibernateDAO;
+import com.zanvork.wowspring.model.enums.Region;
 import com.zanvork.wowspring.model.rest.RestCharacter;
 import com.zanvork.wowspring.model.rest.RestGuild;
+import com.zanvork.wowspring.model.rest.RestRealm;
+import com.zanvork.wowspring.model.rest.RestRealms;
+import com.zanvork.wowspring.utils.BattleNetRequest;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -11,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
  * @author jgreeman
  */
 public class WarcraftAPIParser {
+    
     Logger log  =   LoggerFactory.getLogger(WarcraftAPIParser.class);
     public RestCharacter loadCharacter(String realm, String name){
         RestTemplate restTemplate = new RestTemplate();
@@ -28,6 +37,18 @@ public class WarcraftAPIParser {
             member.setGuildMember(loadCharacter(guild.getRealm(), member.getGuildMember().getName()));
         });
         return guild;
+    }
+    
+    /**
+     * Load all realms for a specified region
+     * @param region region to be loaded
+     * @return list of RestRealm models
+     */
+    public List<RestRealm> loadRealms(Region region){
+        RestTemplate restTemplate   =   new RestTemplate();
+        RestRealms realmsWrapper   =   restTemplate.getForObject(BattleNetRequest.buildObjectRequest("realm", region.name()), RestRealms.class);
+        
+        return realmsWrapper.getRealms();
     }
     
 }
