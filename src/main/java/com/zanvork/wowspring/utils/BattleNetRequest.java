@@ -29,19 +29,23 @@ public class BattleNetRequest {
         return buildObjectRequest(object, region, realm, name);
     }
     public static String buildObjectRequest(String object, String region, String realm, String name){
-        return buildObjectRequest(object, region, realm, name, null);
+        return buildRequest(object, region, realm, name, null);
     }
     
-    public static String buildObjectRequest(String object, String region, String realm, String name, List<String> fields){
+    public static String buildRequest(String object, String region, String realm, String name, String[] fields){
         StringBuilder requestBuilder    =   new StringBuilder();
         requestBuilder.append("https://")
                 .append(region.toLowerCase())
                 .append(".api.battle.net/wow/")
-                .append(object)
-                .append("/")
+                .append(object);
+        if (!realm.isEmpty()){
+            requestBuilder.append("/")
+                    .append(realm);
+        }
+        requestBuilder.append("/")
                 .append(name)
                 .append("?");
-        if (fields != null && !fields.isEmpty()){
+        if (fields != null && fields.length > 0){
             requestBuilder.append("fields=");
             String seperator    =   "";
             for (String field : fields){

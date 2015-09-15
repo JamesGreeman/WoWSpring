@@ -40,6 +40,7 @@ public class Realm implements Serializable {
     }
     
     public Realm(RestRealm realm, Region region){
+        this();
         name        =   realm.getName();
         slug        =   realm.getSlug();
         this.region =   region;
