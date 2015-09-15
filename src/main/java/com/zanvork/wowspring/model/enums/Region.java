@@ -7,7 +7,6 @@ package com.zanvork.wowspring.model.enums;
 public enum Region {
     EU("eu"), 
     US("us"),
-    CN("cn"),
     KR("kr"),
     TW("tw");
     

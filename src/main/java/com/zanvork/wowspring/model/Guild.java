@@ -42,7 +42,7 @@ public class Guild implements Serializable {
     public Guild(RestGuild guild, Region region){
         this();
         name                =   guild.getName();
-        realm               =   new Realm(guild.getRealm(), region, guild.getBattlegroup());
+        //realm               =   new Realm(guild.getRealm(), region, guild.getBattlegroup());
         guildLevel          =   guild.getGuildLevel();
         achievementPoints   =   guild.getAchievementPoints();
         faction             =   Faction.factionFromSide(guild.getSide());
