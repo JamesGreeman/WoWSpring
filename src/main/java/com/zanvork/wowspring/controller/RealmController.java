@@ -8,7 +8,7 @@ package com.zanvork.wowspring.controller;
 import com.zanvork.wowspring.utils.WarcraftAPIParser;
 import com.zanvork.wowspring.model.DAO.RealmHibernateDAO;
 import com.zanvork.wowspring.model.Realm;
-import com.zanvork.wowspring.model.enums.Region;
+import com.zanvork.wowspring.model.enums.Regions;
 import com.zanvork.wowspring.model.rest.RestRealm;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class RealmController {
     @RequestMapping("/update/{region}")
     public void updateRealms(@PathVariable String region){
         WarcraftAPIParser parser    =   new WarcraftAPIParser();
-        Region realmsRegions        =   Region.valueOf(region.toUpperCase());
+        Regions realmsRegions        =   Regions.valueOf(region.toUpperCase());
         List<RestRealm> realms      =   parser.getRealms(realmsRegions);
         realms.stream().map((realm) -> {
             Realm realmToAdd    =   hibernateDAO.findByRegionAndSlug(realmsRegions, realm.getSlug());

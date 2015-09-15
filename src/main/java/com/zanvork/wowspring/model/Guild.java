@@ -1,7 +1,7 @@
 package com.zanvork.wowspring.model;
 
-import com.zanvork.wowspring.model.enums.Faction;
-import com.zanvork.wowspring.model.enums.Region;
+import com.zanvork.wowspring.model.enums.Factions;
+import com.zanvork.wowspring.model.enums.Regions;
 import com.zanvork.wowspring.model.rest.RestGuild;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
@@ -36,7 +36,7 @@ public class Guild implements Serializable {
     private int     guildLevel;
     private int     achievementPoints;
     @Enumerated(EnumType.STRING)
-    private Faction faction;
+    private Factions faction;
     
     public Guild(){
         
@@ -48,12 +48,12 @@ public class Guild implements Serializable {
         this.realm          =   realm;
         guildLevel          =   guild.getGuildLevel();
         achievementPoints   =   guild.getAchievementPoints();
-        faction             =   Faction.factionFromSide(guild.getSide());
+        faction             =   Factions.factionFromSide(guild.getSide());
     }
     
     public void updateFromREST(RestGuild guild){
         guildLevel          =   guild.getGuildLevel();
         achievementPoints   =   guild.getAchievementPoints();
-        faction             =   Faction.factionFromSide(guild.getSide());
+        faction             =   Factions.factionFromSide(guild.getSide());
     }
 }
