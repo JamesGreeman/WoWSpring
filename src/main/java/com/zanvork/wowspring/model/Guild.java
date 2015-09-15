@@ -6,6 +6,8 @@ import com.zanvork.wowspring.model.rest.RestGuild;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,21 +30,28 @@ public class Guild implements Serializable {
     private long id;
     
     private String  name;
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     private Realm   realm;
     
     private int     guildLevel;
     private int     achievementPoints;
+    @Enumerated(EnumType.STRING)
     private Faction faction;
     
     public Guild(){
         
     }
     
-    public Guild(RestGuild guild, Region region){
+    public Guild(RestGuild guild, Realm realm){
         this();
         name                =   guild.getName();
-        //realm               =   new Realm(guild.getRealm(), region, guild.getBattlegroup());
+        this.realm          =   realm;
+        guildLevel          =   guild.getGuildLevel();
+        achievementPoints   =   guild.getAchievementPoints();
+        faction             =   Faction.factionFromSide(guild.getSide());
+    }
+    
+    public void updateFromREST(RestGuild guild){
         guildLevel          =   guild.getGuildLevel();
         achievementPoints   =   guild.getAchievementPoints();
         faction             =   Faction.factionFromSide(guild.getSide());

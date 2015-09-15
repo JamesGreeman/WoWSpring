@@ -33,12 +33,11 @@ public class RealmController {
      * Updates the realm entries in the database
      * @param region region to update realms for 
      */
-    @Transactional
     @RequestMapping("/update/{region}")
     public void updateRealms(@PathVariable String region){
         WarcraftAPIParser parser    =   new WarcraftAPIParser();
         Region realmsRegions        =   Region.valueOf(region.toUpperCase());
-        List<RestRealm> realms      =   parser.loadRealms(realmsRegions);
+        List<RestRealm> realms      =   parser.getRealms(realmsRegions);
         realms.stream().map((realm) -> {
             Realm realmToAdd    =   hibernateDAO.findByRegionAndSlug(realmsRegions, realm.getSlug());
             if (realmToAdd == null || realmToAdd.getId() < 1){

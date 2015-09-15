@@ -19,4 +19,5 @@ public interface RealmHibernateDAO extends CrudRepository<Realm, Long>{
     
     
     public Realm findByRegionAndSlug(Region region, String slug);
+    public Realm findByRegionAndName(Region region, String name);
 }
