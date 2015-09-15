@@ -4,26 +4,20 @@ package com.zanvork.wowspring.model.enums;
  *
  * @author jgreeman
  */
-public enum Faction {
+public enum Factions {
     ALLIANCE("horde"), 
     HORDE("alliance"),
     NEUTRAL("neutral");
     
     private final String value;
     
-    private Faction(String value){
+    private Factions(String value){
         this.value  =   value;
     }
     
-    public static Faction factionFromSide(int side){
-        switch (side){
-            case 0:
-                return ALLIANCE;
-            case 1:
-                return HORDE;
-            default:
-               return NEUTRAL;
-        }
+    public static Factions factionFromSide(int side){
+        if (side > 2) side = 0;
+        return Factions.values()[side];
     }
     
     @Override

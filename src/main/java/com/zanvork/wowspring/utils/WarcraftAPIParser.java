@@ -1,6 +1,6 @@
 package com.zanvork.wowspring.utils;
 
-import com.zanvork.wowspring.model.enums.Region;
+import com.zanvork.wowspring.model.enums.Regions;
 import com.zanvork.wowspring.model.rest.RestCharacter;
 import com.zanvork.wowspring.model.rest.RestGuild;
 import com.zanvork.wowspring.model.rest.RestRealm;
@@ -22,14 +22,14 @@ public class WarcraftAPIParser {
      * @param name name of the character
      * @return the character object
      */
-    public RestCharacter loadCharacter(Region region, String realm, String name){
+    public RestCharacter loadCharacter(Regions region, String realm, String name){
         return new RestTemplate().getForObject(
                 BattleNetRequest.buildRequest("character", region.toString(), realm, name, new String[]{"talents","items"}),
                 RestCharacter.class
         );
     }
     
-    public RestGuild getGuild(Region region, String realm, String name){
+    public RestGuild getGuild(Regions region, String realm, String name){
         return WarcraftAPIParser.this.getGuild(region, realm, name, false);
     }
     /**
@@ -40,7 +40,7 @@ public class WarcraftAPIParser {
      * @param getMemberDetails whether to load details of all guild members
      * @return the guild object
      */
-    public RestGuild getGuild(Region region, String realm, String name, boolean getMemberDetails){
+    public RestGuild getGuild(Regions region, String realm, String name, boolean getMemberDetails){
         RestGuild guild = new RestTemplate().getForObject(
                 BattleNetRequest.buildRequest("guild", region.name(), realm, name, new String[]{"members"}),
                 RestGuild.class
@@ -58,7 +58,7 @@ public class WarcraftAPIParser {
      * @param region region to be loaded
      * @return list of RestRealm models
      */
-    public List<RestRealm> getRealms(Region region){
+    public List<RestRealm> getRealms(Regions region){
         return new RestTemplate().getForObject(
                 BattleNetRequest.buildObjectRequest("realm", region.name()), 
                 RestRealms.class

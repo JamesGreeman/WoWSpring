@@ -1,6 +1,6 @@
 package com.zanvork.wowspring.model;
 
-import com.zanvork.wowspring.model.enums.Region;
+import com.zanvork.wowspring.model.enums.Regions;
 import com.zanvork.wowspring.model.rest.RestRealm;
 import java.io.Serializable;
 import javax.persistence.Entity;
@@ -28,7 +28,7 @@ public class Realm implements Serializable {
     private String name;
     private String slug;
     @Enumerated(EnumType.STRING)
-    private Region region;
+    private Regions region;
     private String battlegroup;
     private String type;
     private String population;
@@ -39,7 +39,7 @@ public class Realm implements Serializable {
         
     }
     
-    public Realm(RestRealm realm, Region region){
+    public Realm(RestRealm realm, Regions region){
         this();
         name        =   realm.getName();
         slug        =   realm.getSlug();

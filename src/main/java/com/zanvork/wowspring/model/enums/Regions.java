@@ -4,7 +4,7 @@ package com.zanvork.wowspring.model.enums;
  *
  * @author jgreeman
  */
-public enum Region {
+public enum Regions {
     EU("eu"), 
     US("us"),
     KR("kr"),
@@ -12,7 +12,7 @@ public enum Region {
     
     private final String value;
     
-    private Region(String value){
+    private Regions(String value){
         this.value  =   value;
     }
     
