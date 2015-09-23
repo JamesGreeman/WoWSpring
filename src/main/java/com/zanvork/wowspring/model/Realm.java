@@ -51,7 +51,7 @@ public class Realm implements Serializable {
         timezone    =   realm.getTimezone();
     }
     
-    public void updateRealm(RestRealm realm){
+    public void updateFromREST(RestRealm realm){
         battlegroup         =   realm.getBattlegroup();
         type                =   realm.getType();
         population          =   realm.getPopulation();
