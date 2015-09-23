@@ -5,6 +5,7 @@
  */
 package com.zanvork.wowspring.model;
 
+import com.zanvork.wowspring.model.rest.RestClass;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -22,4 +23,21 @@ public class CharacterClass implements Serializable {
     private long mask;
     private String powerType;
     private String name;
+    
+    public CharacterClass(){
+        
+    }
+    public CharacterClass(RestClass clazz){
+        this();
+        id          =   clazz.getId();
+        mask        =   clazz.getMask();
+        powerType   =   clazz.getPowerType();
+        name        =   clazz.getName();
+    }
+    
+    public void updateFromREST(RestClass clazz){
+        mask        =   clazz.getMask();
+        powerType   =   clazz.getPowerType();
+        name        =   clazz.getName();
+    }
 }

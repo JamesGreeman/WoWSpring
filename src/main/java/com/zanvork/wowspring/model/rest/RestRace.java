@@ -17,6 +17,6 @@ import lombok.Data;
 public class RestRace {
     private long id;
     private long mask;
-    private int side;
+    private String side;
     private String name;
 }

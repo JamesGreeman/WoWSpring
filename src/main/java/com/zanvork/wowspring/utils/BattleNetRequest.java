@@ -4,9 +4,6 @@
  * and open the template in the editor.
  */
 package com.zanvork.wowspring.utils;
-
-import java.util.List;
-
 /**
  *
  * @author jgreeman
@@ -38,29 +35,33 @@ public class BattleNetRequest {
                 .append(region.toLowerCase())
                 .append(".api.battle.net/wow/")
                 .append(object);
-        if (!realm.isEmpty()){
-            requestBuilder.append("/")
-                    .append(realm);
-        }
-        requestBuilder.append("/")
-                .append(name)
-                .append("?");
-        if (fields != null && fields.length > 0){
-            requestBuilder.append("fields=");
-            String seperator    =   "";
-            for (String field : fields){
-                requestBuilder.append(seperator)
-                        .append(field);
-                seperator = ",";
+        if (object.contains("/")){
+            requestBuilder.append("?");
+        } else {
+            if (!realm.isEmpty()){
+                requestBuilder.append("/")
+                        .append(realm);
             }
-            requestBuilder.append("&");
+            requestBuilder.append("/")
+                    .append(name)
+                    .append("?");
+            if (fields != null && fields.length > 0){
+                requestBuilder.append("fields=");
+                String seperator    =   "";
+                for (String field : fields){
+                    requestBuilder.append(seperator)
+                            .append(field);
+                    seperator = ",";
+                }
+                requestBuilder.append("&");
+            }
         }
         requestBuilder.append("locale=")
                 .append(LOCALE)
                 .append("&apikey=")
                 .append(API_KEY);
         
-        return requestBuilder.toString();
+            return requestBuilder.toString();
     }
     
 }

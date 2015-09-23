@@ -6,6 +6,7 @@
 package com.zanvork.wowspring.model;
 
 import com.zanvork.wowspring.model.enums.Factions;
+import com.zanvork.wowspring.model.rest.RestRace;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -26,4 +27,22 @@ public class CharacterRace implements Serializable {
     @Enumerated(EnumType.STRING)
     private Factions faction;
     private String name;
+    
+    
+    public CharacterRace(){
+        
+    }
+    public CharacterRace(RestRace clazz){
+        this();
+        id          =   clazz.getId();
+        mask        =   clazz.getMask();
+        faction     =   Factions.valueOf(clazz.getSide().toUpperCase());
+        name        =   clazz.getName();
+    }
+    
+    public void updateFromREST(RestRace clazz){
+        mask        =   clazz.getMask();
+        faction     =   Factions.valueOf(clazz.getSide().toUpperCase());
+        name        =   clazz.getName();
+    }
 }
