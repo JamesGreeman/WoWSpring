@@ -7,12 +7,14 @@ package com.zanvork.wowspring;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  *
  * @author jgreeman
  */
 @SpringBootApplication
+@EnableScheduling
 public class ApplicationLauncher {
      
     
