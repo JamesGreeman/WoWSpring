@@ -9,7 +9,7 @@ import com.zanvork.wowspring.model.CharacterClass;
 import com.zanvork.wowspring.model.CharacterRace;
 import com.zanvork.wowspring.model.DAO.CharacterClassHibernateDAO;
 import com.zanvork.wowspring.model.DAO.CharacterRaceHibernateDAO;
-import com.zanvork.wowspring.utils.WarcraftAPIParser;
+import com.zanvork.wowspring.service.WarcraftAPIService;
 import com.zanvork.wowspring.model.DAO.RealmHibernateDAO;
 import com.zanvork.wowspring.model.Realm;
 import com.zanvork.wowspring.model.enums.Regions;
@@ -37,7 +37,7 @@ public class DataController {
     @Autowired
     private CharacterRaceHibernateDAO raceDAO;
     
-    private final WarcraftAPIParser parser    =   new WarcraftAPIParser();
+    private final WarcraftAPIService parser    =   new WarcraftAPIService();
     
     
     /**

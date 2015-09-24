@@ -11,9 +11,11 @@ import com.zanvork.wowspring.model.DAO.CharacterClassHibernateDAO;
 import com.zanvork.wowspring.model.DAO.CharacterRaceHibernateDAO;
 import com.zanvork.wowspring.model.DAO.RealmHibernateDAO;
 import com.zanvork.wowspring.model.Realm;
+import com.zanvork.wowspring.model.enums.Regions;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,7 +23,7 @@ import org.springframework.stereotype.Service;
  * @author jgreeman
  */
 @Service
-public class WarcraftDataService extends BaseService {
+public class WarcraftDataService implements ServiceInterface{
     
     @Autowired
     private RealmHibernateDAO realmDAO;
@@ -37,19 +39,6 @@ public class WarcraftDataService extends BaseService {
     private final Object classesLock    =   new Object();
     private final Object racesLock      =   new Object();
     private final Object realmsLock     =   new Object();
-
-    private static WarcraftDataService instance =   null;
-    
-    public WarcraftDataService(){
-       
-    }
-    
-    public static WarcraftDataService getInstance() {
-        if (instance == null){
-            instance    =   new WarcraftDataService();
-        }
-        return instance;
-    }
 
     public CharacterClass getClass(long i){
         synchronized(classesLock){
@@ -68,7 +57,9 @@ public class WarcraftDataService extends BaseService {
         }
         return null;
     }
-    
+    public Realm getRealm(String realmName, String region){
+        return getRealm(getRealmKey(realmName, Regions.valueOf(region.toUpperCase())));
+    }
     public Realm getRealm(String key){
         synchronized(realmsLock){
             if (realms.containsKey(key)){
@@ -77,7 +68,11 @@ public class WarcraftDataService extends BaseService {
         }
         return null;
     }
+    private String getRealmKey(String realmName, Regions region){
+        return region.toString() + "_" + realmName.toLowerCase();
+    }
     
+    @Scheduled(fixedDelay=5000)
     @Override
     public void runUpdate() {
         loadClasses();
@@ -104,7 +99,9 @@ public class WarcraftDataService extends BaseService {
 
     private void loadRealms(){
         Map<String, Realm>  newRealms   =   new HashMap<>();
-        realmDAO.findAll().forEach((realm)-> newRealms.put(realm.getRegion().toString() + "_" + realm.getName(), realm));
+        realmDAO.findAll().forEach((realm)-> {
+            newRealms.put(getRealmKey(realm.getName(), realm.getRegion()), realm);
+        });
         synchronized(realmsLock){
             realms =   newRealms;
         }

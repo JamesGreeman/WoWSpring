@@ -1,4 +1,4 @@
-package com.zanvork.wowspring.utils;
+package com.zanvork.wowspring.service;
 
 import com.zanvork.wowspring.model.enums.Regions;
 import com.zanvork.wowspring.model.rest.RestCharacter;
@@ -9,14 +9,17 @@ import com.zanvork.wowspring.model.rest.RestRace;
 import com.zanvork.wowspring.model.rest.RestRaces;
 import com.zanvork.wowspring.model.rest.RestRealm;
 import com.zanvork.wowspring.model.rest.RestRealms;
+import com.zanvork.wowspring.utils.BattleNetRequest;
 import java.util.List;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
  *
  * @author jgreeman
  */
-public class WarcraftAPIParser {
+@Service
+public class WarcraftAPIService {
     
     
     /**
@@ -26,15 +29,15 @@ public class WarcraftAPIParser {
      * @param name name of the character
      * @return the character object
      */
-    public RestCharacter loadCharacter(Regions region, String realm, String name){
+    public RestCharacter getCharacter(String region, String realm, String name){
         return new RestTemplate().getForObject(
-                BattleNetRequest.buildRequest("character", region.toString(), realm, name, new String[]{"talents","items"}),
+                BattleNetRequest.buildRequest("character", region, realm, name, new String[]{"talents","items"}),
                 RestCharacter.class
         );
     }
     
-    public RestGuild getGuild(Regions region, String realm, String name){
-        return WarcraftAPIParser.this.getGuild(region, realm, name, false);
+    public RestGuild getGuild(String region, String realm, String name){
+        return WarcraftAPIService.this.getGuild(region, realm, name, false);
     }
     /**
      * Load information for a specified guild
@@ -44,14 +47,14 @@ public class WarcraftAPIParser {
      * @param getMemberDetails whether to load details of all guild members
      * @return the guild object
      */
-    public RestGuild getGuild(Regions region, String realm, String name, boolean getMemberDetails){
+    public RestGuild getGuild(String region, String realm, String name, boolean getMemberDetails){
         RestGuild guild = new RestTemplate().getForObject(
-                BattleNetRequest.buildRequest("guild", region.name(), realm, name, new String[]{"members"}),
+                BattleNetRequest.buildRequest("guild", region, realm, name, new String[]{"members"}),
                 RestGuild.class
         );
         if (getMemberDetails){
             guild.getMembers().stream().forEach((member) -> {
-                member.setGuildMember(loadCharacter(region, guild.getRealm(), member.getGuildMember().getName()));
+                member.setGuildMember(getCharacter(region, guild.getRealm(), member.getGuildMember().getName()));
             });
         }
         return guild;
