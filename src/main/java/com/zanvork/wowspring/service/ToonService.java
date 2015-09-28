@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  * @author jgreeman
  */
 @Service
-public class ToonService implements ServiceInterface{
+public class ToonService implements BackendService{
     
     @Autowired
     private ToonHibernateDAO toonDAO;
@@ -42,8 +42,8 @@ public class ToonService implements ServiceInterface{
     }
     
     public Toon updateToon(Toon toon, RestCharacter characterData){
-        toon.setCharClass(dataService.getClass(characterData.getCharClass()));
-        toon.setRace(dataService.getRace(characterData.getRace()));
+        toon.setCharClass(dataService.getToonClass(characterData.getCharClass()));
+        toon.setRace(dataService.getToonRace(characterData.getRace()));
         toon.setGender(Genders.genderFromInt(characterData.getGender()));
         toon.setCharLevel(characterData.getCharLevel());
         toon.setAchievementPoints(characterData.getAchievementPoints());

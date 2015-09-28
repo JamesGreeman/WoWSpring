@@ -39,23 +39,4 @@ public class Realm implements Serializable {
         
     }
     
-    public Realm(RestRealm realm, Regions region){
-        this();
-        name        =   realm.getName();
-        slug        =   realm.getSlug();
-        this.region =   region;
-        battlegroup =   realm.getBattlegroup();
-        type        =   realm.getType();
-        population  =   realm.getPopulation();
-        locale      =   realm.getLocale();
-        timezone    =   realm.getTimezone();
-    }
-    
-    public void updateFromREST(RestRealm realm){
-        battlegroup         =   realm.getBattlegroup();
-        type                =   realm.getType();
-        population          =   realm.getPopulation();
-        locale              =   realm.getLocale();
-        timezone            =   realm.getTimezone();
-    }
 }

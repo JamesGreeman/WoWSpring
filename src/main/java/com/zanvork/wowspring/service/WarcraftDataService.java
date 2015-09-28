@@ -5,13 +5,17 @@
  */
 package com.zanvork.wowspring.service;
 
-import com.zanvork.wowspring.model.CharacterClass;
-import com.zanvork.wowspring.model.CharacterRace;
+import com.zanvork.wowspring.model.ToonClass;
+import com.zanvork.wowspring.model.ToonRace;
 import com.zanvork.wowspring.model.DAO.CharacterClassHibernateDAO;
 import com.zanvork.wowspring.model.DAO.CharacterRaceHibernateDAO;
 import com.zanvork.wowspring.model.DAO.RealmHibernateDAO;
 import com.zanvork.wowspring.model.Realm;
+import com.zanvork.wowspring.model.enums.Factions;
 import com.zanvork.wowspring.model.enums.Regions;
+import com.zanvork.wowspring.model.rest.RestClass;
+import com.zanvork.wowspring.model.rest.RestRace;
+import com.zanvork.wowspring.model.rest.RestRealm;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +27,7 @@ import org.springframework.stereotype.Service;
  * @author jgreeman
  */
 @Service
-public class WarcraftDataService implements ServiceInterface{
+public class WarcraftDataService implements BackendService{
     
     @Autowired
     private RealmHibernateDAO realmDAO;
@@ -32,30 +36,63 @@ public class WarcraftDataService implements ServiceInterface{
     @Autowired
     private CharacterRaceHibernateDAO raceDAO;
     
-    private Map<Long, CharacterClass>   classes =   new HashMap<>();
-    private Map<Long, CharacterRace>    races   =   new HashMap<>();
-    private Map<String, Realm>          realms  =   new HashMap<>();
+    private Map<Long, ToonClass>    toonClasses =   new HashMap<>();
+    private Map<Long, ToonRace>     toonRaces   =   new HashMap<>();
+    private Map<String, Realm>      realms      =   new HashMap<>();
     
     private final Object classesLock    =   new Object();
     private final Object racesLock      =   new Object();
     private final Object realmsLock     =   new Object();
 
-    public CharacterClass getClass(long i){
+    
+    public ToonClass getToonClass(long i){
         synchronized(classesLock){
-            if (classes.containsKey(i)){
-               return classes.get(i);
+            if (toonClasses.containsKey(i)){
+               return toonClasses.get(i);
             }
         }
         return null;
     }
     
-    public CharacterRace getRace(long i){
+    public ToonClass addOrUpdateToonClass(RestClass classData){
+        ToonClass toonClass   =   classDAO.findOne(classData.getId());
+        
+        if (toonClass == null || toonClass.getId() < 0){
+            toonClass =   new ToonClass();
+            toonClass.setId(classData.getId());
+        }
+        
+        toonClass.setMask(classData.getMask());
+        toonClass.setPowerType(classData.getPowerType());
+        toonClass.setName(classData.getName());
+        
+        classDAO.save(toonClass);
+        return toonClass;
+    }
+    
+    public ToonRace getToonRace(long i){
         synchronized(racesLock){
-            if (races.containsKey(i)){
-               return races.get(i);
+            if (toonRaces.containsKey(i)){
+               return toonRaces.get(i);
             }
         }
         return null;
+    }
+    
+    public ToonRace addOrUpdateToonRace(RestRace raceData){
+        ToonRace toonRace   =   raceDAO.findOne(raceData.getId());
+        
+        if (toonRace == null || toonRace.getId() < 0){
+            toonRace =   new ToonRace();
+            toonRace.setId(raceData.getId());
+        }
+        
+        toonRace.setMask(raceData.getMask());
+        toonRace.setFaction(Factions.valueOf(raceData.getSide().toUpperCase()));
+        toonRace.setName(raceData.getName());
+        
+        raceDAO.save(toonRace);
+        return toonRace;
     }
     public Realm getRealm(String realmName, String region){
         return getRealm(getRealmKey(realmName, Regions.valueOf(region.toUpperCase())));
@@ -68,6 +105,29 @@ public class WarcraftDataService implements ServiceInterface{
         }
         return null;
     }
+    public Realm addOrUpdateRealm(RestRealm realmData, String region){
+        Regions regionEnum  =   Regions.valueOf(region.toUpperCase());
+        Realm realm         =   realmDAO.findByRegionAndSlug(regionEnum, realmData.getSlug());
+        
+        if (realm == null || realm.getId() < 1){
+            realm =   new Realm();
+            realm.setName(realmData.getName());
+            realm.setSlug(realmData.getSlug());
+            realm.setRegion(regionEnum);
+        }
+        realm.setBattlegroup(realmData.getBattlegroup());
+        realm.setType(realmData.getType());
+        realm.setPopulation(realmData.getPopulation());
+        realm.setLocale(realmData.getLocale());
+        realm.setTimezone(realmData.getTimezone());
+        
+        realmDAO.save(realm);
+        return realm;
+    }
+    
+    
+    
+    
     private String getRealmKey(String realmName, Regions region){
         return region.toString() + "_" + realmName.toLowerCase();
     }
@@ -81,19 +141,19 @@ public class WarcraftDataService implements ServiceInterface{
     }
     
     private void loadClasses(){
-        Map<Long, CharacterClass>  newClasses    =   new HashMap<>();
-        classDAO.findAll().forEach((clazz) -> newClasses.put(clazz.getId(), clazz));
+        Map<Long, ToonClass>  newClasses    =   new HashMap<>();
+        classDAO.findAll().forEach((toonClass) -> newClasses.put(toonClass.getId(), toonClass));
         synchronized(classesLock){
-            classes =   newClasses;
+            toonClasses =   newClasses;
         }
 
     }
 
     private void loadRaces(){
-        Map<Long, CharacterRace>  newRaces  =   new HashMap<>();
+        Map<Long, ToonRace>  newRaces  =   new HashMap<>();
         raceDAO.findAll().forEach((race) -> newRaces.put(race.getId(), race));
         synchronized(racesLock){
-            races =   newRaces;
+            toonRaces =   newRaces;
         }
     }
 

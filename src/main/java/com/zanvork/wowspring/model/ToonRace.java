@@ -20,7 +20,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-public class CharacterRace implements Serializable {
+public class ToonRace implements Serializable {
     @Id
     private long id;
     private long mask;
@@ -29,20 +29,7 @@ public class CharacterRace implements Serializable {
     private String name;
     
     
-    public CharacterRace(){
+    public ToonRace(){
         
-    }
-    public CharacterRace(RestRace clazz){
-        this();
-        id          =   clazz.getId();
-        mask        =   clazz.getMask();
-        faction     =   Factions.valueOf(clazz.getSide().toUpperCase());
-        name        =   clazz.getName();
-    }
-    
-    public void updateFromREST(RestRace clazz){
-        mask        =   clazz.getMask();
-        faction     =   Factions.valueOf(clazz.getSide().toUpperCase());
-        name        =   clazz.getName();
     }
 }

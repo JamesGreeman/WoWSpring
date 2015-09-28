@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * @author jgreeman
  */
 @Service
-public interface ServiceInterface {
+public interface BackendService {
     
     public void runUpdate();
 }

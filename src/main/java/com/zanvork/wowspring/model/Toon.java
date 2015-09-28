@@ -34,9 +34,9 @@ public class Toon implements Serializable {
     @ManyToOne
     private Realm  realm;
     @ManyToOne
-    private CharacterClass charClass;
+    private ToonClass charClass;
     @ManyToOne
-    private CharacterRace race;
+    private ToonRace race;
     @Enumerated(EnumType.STRING)
     private Genders gender;
     private int charLevel;

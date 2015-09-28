@@ -9,7 +9,9 @@ import com.zanvork.wowspring.model.DAO.GuildHibernateDAO;
 import com.zanvork.wowspring.model.DAO.RealmHibernateDAO;
 import com.zanvork.wowspring.model.Guild;
 import com.zanvork.wowspring.model.Realm;
+import com.zanvork.wowspring.model.Toon;
 import com.zanvork.wowspring.model.enums.Regions;
+import com.zanvork.wowspring.service.GuildService;
 import com.zanvork.wowspring.service.WarcraftAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,30 +27,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class GuildController {
     
     @Autowired
-    private GuildHibernateDAO guildDAO;
-    @Autowired
-    private RealmHibernateDAO realmDAO;
+    private GuildService guildService;
     
-    private final WarcraftAPIService parser    =   new WarcraftAPIService();
+    @Autowired
+    private WarcraftAPIService parser;
     
     @RequestMapping("/get/{region}/{realmName}/{name}")
     public Guild getGuild(@PathVariable String region, @PathVariable String realmName, @PathVariable String name){
-        Realm realm =   realmDAO.findByRegionAndName(Regions.valueOf(region.toUpperCase()), realmName);
-        Guild guild =   guildDAO.findByRealmAndName(realm, name);
+        Guild guild =   guildService.getGuild(name, realmName, region);
         if (guild == null || guild.getId() < 1){
-            guild   =   new Guild(parser.getGuild(region, realmName, name), realm);
-            guildDAO.save(guild);
+            guild   =   guildService.addGuild(parser.getGuild(region, realmName, name), realmName, region);
         }
         return guild;
     }
     
     @RequestMapping("/update/{region}/{realmName}/{name}")
-    public void updateGuild(@PathVariable String region, @PathVariable String realmName, @PathVariable String name){
-        Realm realm =   realmDAO.findByRegionAndName(Regions.valueOf(region.toUpperCase()), realmName);
-        Guild guild =   guildDAO.findByRealmAndName(realm, name);
+    public String updateGuild(@PathVariable String region, @PathVariable String realmName, @PathVariable String name){
+        Guild guild =   guildService.getGuild(name, realmName, region);
         if (guild != null && guild.getId() > 0){
-            guild.updateFromREST(parser.getGuild(region, realmName, name));
-            guildDAO.save(guild);
+            guildService.updateGuild(guild, parser.getGuild(region, realmName, name));
         }
+        return "Successfully Updated";
     }
 }

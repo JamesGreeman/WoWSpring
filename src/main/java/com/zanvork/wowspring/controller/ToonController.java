@@ -36,10 +36,11 @@ public class ToonController {
     }
     
     @RequestMapping("/update/{region}/{realmName}/{name}")
-    public void updateCharacter(@PathVariable String region, @PathVariable String realmName, @PathVariable String name){
+    public String updateCharacter(@PathVariable String region, @PathVariable String realmName, @PathVariable String name){
         Toon toon =   toonService.getToon(name, realmName, region);
         if (toon != null && toon.getId() > 0){
             toonService.updateToon(toon, parser.getCharacter(region, realmName, name));
         }
+        return "Successfully Updated";
     }
 }

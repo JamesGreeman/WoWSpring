@@ -5,13 +5,13 @@
  */
 package com.zanvork.wowspring.model.DAO;
 
-import com.zanvork.wowspring.model.CharacterRace;
+import com.zanvork.wowspring.model.ToonRace;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  *
  * @author jgreeman
  */
-public interface CharacterRaceHibernateDAO extends CrudRepository<CharacterRace, Long>{
+public interface CharacterRaceHibernateDAO extends CrudRepository<ToonRace, Long>{
     
 }

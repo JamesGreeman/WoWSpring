@@ -17,27 +17,15 @@ import lombok.Data;
  */
 @Data
 @Entity
-public class CharacterClass implements Serializable {
+public class ToonClass implements Serializable {
     @Id
     private long id;
     private long mask;
     private String powerType;
     private String name;
     
-    public CharacterClass(){
+    public ToonClass(){
         
     }
-    public CharacterClass(RestClass clazz){
-        this();
-        id          =   clazz.getId();
-        mask        =   clazz.getMask();
-        powerType   =   clazz.getPowerType();
-        name        =   clazz.getName();
-    }
-    
-    public void updateFromREST(RestClass clazz){
-        mask        =   clazz.getMask();
-        powerType   =   clazz.getPowerType();
-        name        =   clazz.getName();
-    }
+ 
 }
