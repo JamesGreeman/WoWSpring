@@ -5,6 +5,7 @@ import com.zanvork.wowspring.model.rest.RestCharacter;
 import com.zanvork.wowspring.model.rest.RestClass;
 import com.zanvork.wowspring.model.rest.RestClasses;
 import com.zanvork.wowspring.model.rest.RestGuild;
+import com.zanvork.wowspring.model.rest.RestItem;
 import com.zanvork.wowspring.model.rest.RestRace;
 import com.zanvork.wowspring.model.rest.RestRaces;
 import com.zanvork.wowspring.model.rest.RestRealm;
@@ -91,5 +92,12 @@ public class WarcraftAPIService {
                 BattleNetRequest.buildObjectRequest("data/character/races"), 
                 RestRaces.class
         ).getRaces();
+    }
+    
+    public RestItem getItem(long id){
+        return new RestTemplate().getForObject(
+                BattleNetRequest.buildObjectRequest("item", "", "","" + id), 
+                RestItem.class
+        );
     }
 }

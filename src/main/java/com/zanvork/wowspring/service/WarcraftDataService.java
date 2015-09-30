@@ -9,14 +9,20 @@ import com.zanvork.wowspring.model.ToonClass;
 import com.zanvork.wowspring.model.ToonRace;
 import com.zanvork.wowspring.model.DAO.CharacterClassHibernateDAO;
 import com.zanvork.wowspring.model.DAO.CharacterRaceHibernateDAO;
+import com.zanvork.wowspring.model.DAO.ItemHibernateDAO;
 import com.zanvork.wowspring.model.DAO.RealmHibernateDAO;
+import com.zanvork.wowspring.model.Item;
 import com.zanvork.wowspring.model.Realm;
 import com.zanvork.wowspring.model.enums.Factions;
+import com.zanvork.wowspring.model.enums.ItemStatTypes;
 import com.zanvork.wowspring.model.enums.Regions;
 import com.zanvork.wowspring.model.rest.RestClass;
+import com.zanvork.wowspring.model.rest.RestItem;
 import com.zanvork.wowspring.model.rest.RestRace;
 import com.zanvork.wowspring.model.rest.RestRealm;
+import com.zanvork.wowspring.model.rest.RestStat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,19 +35,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class WarcraftDataService implements BackendService{
     
+    
     @Autowired
-    private RealmHibernateDAO realmDAO;
+    private WarcraftAPIService apiService;    
+    
     @Autowired
     private CharacterClassHibernateDAO classDAO;
     @Autowired
     private CharacterRaceHibernateDAO raceDAO;
+    @Autowired
+    private ItemHibernateDAO itemDAO;
+    @Autowired
+    private RealmHibernateDAO realmDAO;
     
     private Map<Long, ToonClass>    toonClasses =   new HashMap<>();
     private Map<Long, ToonRace>     toonRaces   =   new HashMap<>();
+    private Map<Long, Item>         items       =   new HashMap<>();
     private Map<String, Realm>      realms      =   new HashMap<>();
     
     private final Object classesLock    =   new Object();
     private final Object racesLock      =   new Object();
+    private final Object itemsLock      =   new Object();
     private final Object realmsLock     =   new Object();
 
     
@@ -94,6 +108,42 @@ public class WarcraftDataService implements BackendService{
         raceDAO.save(toonRace);
         return toonRace;
     }
+    public Item getItem(long id){
+        synchronized(itemsLock){
+            if (items.containsKey(id)){
+                return items.get(id);
+            }
+        }
+        return null;
+    }
+
+    public Item addOrUpdateItem(RestItem itemData) {
+        Item item   =   new Item();
+        item.setId(itemData.getId());
+        item.setDescription(itemData.getDescription());
+        item.setIcon(itemData.getIcon());
+        item.setName(itemData.getName());
+        
+        Map<ItemStatTypes, Integer> stats    =   new HashMap<>();
+        List<RestStat> restStats    =   itemData.getStats();
+        if (restStats   ==  null){
+            restStats   =   itemData.getBonusStats();
+        }
+        if (restStats !=    null){
+            restStats.stream().forEach((statData) -> {
+                stats.put(ItemStatTypes.getById(statData.getStat()), statData.getAmount());
+            });
+        }
+        item.setStats(stats);
+        itemDAO.save(item);
+        
+        synchronized(itemsLock){
+            items.put(item.getId(), item);
+        }
+        return item;
+    }
+    
+    
     public Realm getRealm(String realmName, String region){
         return getRealm(getRealmKey(realmName, Regions.valueOf(region.toUpperCase())));
     }
@@ -138,6 +188,7 @@ public class WarcraftDataService implements BackendService{
         loadClasses();
         loadRaces();
         loadRealms();
+        loadItems();
     }
     
     private void loadClasses(){
@@ -156,6 +207,14 @@ public class WarcraftDataService implements BackendService{
             toonRaces =   newRaces;
         }
     }
+    
+    private void loadItems(){
+        Map<Long, Item>  newItems  =   new HashMap<>();
+        itemDAO.findAll().forEach((item) -> newItems.put(item.getId(), item));
+        synchronized(itemsLock){
+            items =   newItems;
+        }
+    }
 
     private void loadRealms(){
         Map<String, Realm>  newRealms   =   new HashMap<>();
@@ -166,5 +225,4 @@ public class WarcraftDataService implements BackendService{
             realms =   newRealms;
         }
     }
-    
 }

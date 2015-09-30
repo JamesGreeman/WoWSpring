@@ -5,7 +5,6 @@
  */
 package com.zanvork.wowspring.model;
 
-import com.zanvork.wowspring.model.rest.RestClass;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;

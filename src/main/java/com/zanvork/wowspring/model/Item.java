@@ -5,12 +5,12 @@
  */
 package com.zanvork.wowspring.model;
 
-import com.zanvork.wowspring.model.enums.Factions;
+import com.zanvork.wowspring.model.enums.ItemStatTypes;
 import java.io.Serializable;
+import java.util.Map;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import lombok.Data;
 
 /**
@@ -19,16 +19,17 @@ import lombok.Data;
  */
 @Data
 @Entity
-public class ToonRace implements Serializable {
+public class Item implements Serializable {
     @Id
     private long id;
-    private long mask;
-    @Enumerated(EnumType.STRING)
-    private Factions faction;
     private String name;
+    private String icon;
+    private String description; 
     
-    
-    public ToonRace(){
-        
+    //Don't store item stats yet
+    @Transient
+    private Map<ItemStatTypes, Integer> stats;
+
+    public Item() {
     }
 }

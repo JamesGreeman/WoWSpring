@@ -5,7 +5,7 @@
  */
 package com.zanvork.wowspring.model;
 
-import com.zanvork.wowspring.model.enums.Genders;
+import com.zanvork.wowspring.model.enums.ToonItemSlots;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,9 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import lombok.Data;
 
 /**
@@ -26,30 +23,21 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(uniqueConstraints=
-           @UniqueConstraint(columnNames = {"name", "realm"})) 
-public class Toon implements Serializable {
+public class ToonItem implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
-    private String name;
-    @ManyToOne
-    private Realm  realm;
-    @ManyToOne
-    private ToonClass charClass;
-    @ManyToOne
-    private ToonRace race;
+    
     @Enumerated(EnumType.STRING)
-    private Genders gender;
-    private int charLevel;
-    private int achievementPoints;
-    private String thumbnail;
-    
-    @OneToOne(cascade=CascadeType.ALL)
-    private ToonItemSet items;
-    
-    public Toon(){
-        
-    }
-}
+    private ToonItemSlots itemSlot;
+    @ManyToOne
+    private Item item;
+    @ManyToOne
+    private Item transmogItem;
+    private int enchant;
+    private int[] bonusLists;
 
+    public ToonItem() {
+    }
+    
+}

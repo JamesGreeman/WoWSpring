@@ -31,6 +31,9 @@ public class BattleNetRequest {
     
     public static String buildRequest(String object, String region, String realm, String name, String[] fields){
         StringBuilder requestBuilder    =   new StringBuilder();
+        if (region.isEmpty()){
+            region  =   "eu";
+        }
         requestBuilder.append("https://")
                 .append(region.toLowerCase())
                 .append(".api.battle.net/wow/")
